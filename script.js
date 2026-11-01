@@ -366,7 +366,7 @@ render();
 /* Comunicados globais + painel administrativo do Universo Plata.
    O código de acesso é validado somente pelo servidor Render. */
 (() => {
-  const API_BASE = window.PLATA_API_URL || 'https://COLOQUE-A-URL-DO-RENDER.onrender.com';
+  const API_BASE = 'https://universo-plata-api.onrender.com';
   const seenPrefix = 'plata_notice_seen_';
   let adminToken = null;
   let typed = '';

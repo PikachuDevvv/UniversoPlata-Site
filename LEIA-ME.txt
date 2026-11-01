@@ -1,68 +1,9 @@
-PATCH — PAINEL ADMINISTRATIVO E COMUNICADOS GLOBAIS | UNIVERSO PLATA
+CORREÇÃO DO PLAYER DE NATAL
 
-O QUE ADICIONA
-- Digitar 2411 na página abre o acesso ao painel administrativo.
-- O servidor Render valida o código; ele não fica gravado como senha no HTML.
-- Criar comunicados com título, texto e banner PNG/JPG/WEBP (até 3 MB).
-- Publicar imediatamente ou agendar data/hora.
-- Listar e cancelar comunicados.
-- Visitantes veem cada comunicado uma vez por navegador, a partir do momento em que ele é publicado.
-- O modal central bloqueia a página e desfoca o fundo até clicar em "Entendi!".
+1. Extraia este ZIP.
+2. Copie o arquivo script.js para a pasta principal do site, substituindo o antigo.
+3. Copie a pasta assets/music/natal-mano.mp3 para a pasta assets/music do site.
+4. Não coloque os arquivos dentro de uma subpasta chamada enciclopedia-universo-plata.
+5. Recarregue o site com Ctrl+F5.
 
-IMPORTANTE SOBRE A ARQUITETURA
-O site continua no GitHub Pages. A API roda no Render. Para persistência sem banco pago, a API guarda o arquivo JSON (incluindo banners) no próprio repositório GitHub usando a API do GitHub. Isso exige um Fine-grained Personal Access Token com Contents: Read and write somente para o repositório UniversoPlata-Site. Guarde o token apenas como variável secreta do Render.
-
-PARTE A — PREPARAR O TOKEN DO GITHUB
-1. GitHub > Settings > Developer settings > Personal access tokens > Fine-grained tokens.
-2. Gere um token com acesso somente ao repositório PikachuDevvv/UniversoPlata-Site.
-3. Permissão Repository permissions > Contents: Read and write.
-4. Copie o token. Não coloque no site, não envie em mensagens e não publique no GitHub.
-
-PARTE B — PUBLICAR A API NO RENDER
-1. Envie a pasta "render-backend" deste ZIP para um repositório GitHub (pode ser uma pasta dentro do UniversoPlata-Site).
-2. No Render, New + > Web Service e conecte o repositório.
-3. Se a pasta estiver dentro do repositório, defina Root Directory como render-backend.
-4. Runtime Node, Build Command: npm install, Start Command: npm start.
-5. Plano Free.
-6. Em Environment, configure:
-   ADMIN_CODE = 2411
-   GITHUB_TOKEN = (seu token Fine-grained)
-   GITHUB_OWNER = PikachuDevvv
-   GITHUB_REPO = UniversoPlata-Site
-   GITHUB_BRANCH = main
-   ALLOWED_ORIGIN = * (depois pode restringir ao domínio do site)
-7. Faça deploy. Teste https://SUA-API.onrender.com/health. Deve retornar {"ok":true,...}.
-
-PARTE C — CONECTAR O SITE À API
-1. Abra script.js.
-2. No começo do bloco "Comunicados globais + painel administrativo", encontre:
-   const API_BASE = 'https://COLOQUE-A-URL-DO-RENDER.onrender.com';
-3. Troque pelo endereço real do seu Web Service Render, sem barra no final.
-4. Publique script.js e style.css no GitHub Pages.
-
-USO
-1. Na enciclopédia, digite 2411 (sem precisar clicar em um campo).
-2. Informe o código no prompt. Ele é validado pelo Render.
-3. Crie o título e a mensagem; opcionalmente escolha um banner.
-4. Escolha publicar agora ou agendar.
-5. Clique em Criar comunicado.
-
-COMO A ENTREGA FUNCIONA
-- Comunicados agendados só aparecem depois da data/hora.
-- O site consulta a API ao carregar/recarregar.
-- Cada navegador marca o ID do comunicado como visto após clicar em "Entendi!".
-- Visitantes que entrarem depois da publicação também verão o aviso uma vez.
-- Cancelar um aviso impede novas exibições, mas não apaga a marcação local dos visitantes.
-
-LIMITES E SEGURANÇA
-- O serviço gratuito do Render pode dormir após inatividade; a primeira consulta pode demorar.
-- O código 2411 é fraco como senha. Use-o apenas como solicitado, mas saiba que alguém que o descobrir poderá acessar o painel. O segredo não é enviado ao site até o usuário tentar autenticar.
-- O token do GitHub é a credencial mais sensível: nunca o coloque no JavaScript.
-- Banner limitado a 3 MB. Use imagens otimizadas.
-- O repositório recebe o arquivo plata-data/notices.json por commits automáticos.
-- Esta integração não usa PostgreSQL nem serviço pago, mas depende da disponibilidade da API do Render e do GitHub.
-
-ESTRUTURA DO ZIP
-- index.html, script.js, style.css: atualização do site.
-- render-backend/: API Node para Render.
-- LEIA-ME.txt: estas instruções.
+O caminho final da música deve ser: assets/music/natal-mano.mp3

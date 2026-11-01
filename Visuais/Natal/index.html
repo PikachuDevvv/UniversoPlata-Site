@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#d45d52">
+  <meta name="description" content="Enciclopédia do Universo Plata — personagens, lugares, histórias e curiosidades.">
+  <title>Enciclopédia | Universo Plata</title>
+  <link rel="icon" type="image/png" href="assets/plata.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="site">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+      <a class="brand" href="#inicio" aria-label="Universo Plata - início">
+        <img src="assets/logo-universo-plata.png" alt="Universo Plata">
+      </a>
+      <div class="top-actions">
+        <label class="searchbox"><span>⌕</span><input id="search" type="search" placeholder="Pesquisar na enciclopédia..." aria-label="Pesquisar"></label>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="side-label">ENCICLOPÉDIA</div>
+      <a class="nav-link active" href="#inicio" data-page="inicio"><span>⌂</span> Início</a>
+      <div class="side-label">EXPLORAR</div>
+      <a class="nav-link" href="#personagens" data-page="personagens"><span>♙</span> Personagens</a>
+      <a class="nav-link" href="#locais" data-page="locais"><span>⌖</span> Locais</a>
+      <a class="nav-link" href="#objetos" data-page="objetos"><span>◇</span> Objetos</a>
+      <a class="nav-link" href="#historias" data-page="historias"><span>▤</span> Histórias</a>
+      <a class="nav-link" href="#curiosidades" data-page="curiosidades"><span>✦</span> Curiosidades</a>
+      <a class="nav-link" href="#biblioteca" data-page="biblioteca"><span>↓</span> Biblioteca de assets</a>
+      <div class="sidebar-note"><b>Universo em expansão</b><p>Esta enciclopédia cresce junto com as histórias do canal.</p><span class="online-dot"></span> Arquivo aberto</div>
+      <div class="side-footer">UNIVERSO PLATA · FAN ENCYCLOPEDIA</div>
+    </aside>
+
+    <main id="content" class="content" tabindex="-1"></main>
+    <footer class="footer">Feito para explorar o <b>Universo Plata</b> · Conteúdo em atualização</footer>
+  </div>
+  <div class="screen-overlay" aria-hidden="true"></div>
+  <canvas id="plataSnow" aria-hidden="true"></canvas>
+  <script src="script.js"></script>
+  <script src="neve.js"></script>
+</body>
+</html>

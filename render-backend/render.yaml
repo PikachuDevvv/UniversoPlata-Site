@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: universo-plata-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: ADMIN_CODE
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_OWNER
+        value: PikachuDevvv
+      - key: GITHUB_REPO
+        value: UniversoPlata-Site
+      - key: GITHUB_BRANCH
+        value: main
+      - key: ALLOWED_ORIGIN
+        value: "*"

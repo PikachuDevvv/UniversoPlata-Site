@@ -159,7 +159,19 @@ atualizacoes: () => `
     ${event('Versão 2.0 · 01/11/2026','Grande expansão da enciclopédia','Adicionadas páginas sobre Hectayumu, PDAC, anomalias, murânio, hectayumose, tecnologia, arquivos .pdacEntity, acontecimentos, cronologia e mistérios.')}
     ${event('Versão 1.0 · Edição inicial','Fundação da enciclopédia','Criada a estrutura do site, navegação, identidade visual e perfil inicial de Plata.')}
   </div>
-  <div class="notice">As datas identificam as edições do site, não datas de acontecimentos dentro da história.</div>`
+  <div class="notice">As datas identificam as edições do site, não datas de acontecimentos dentro da história.</div>`,
+
+  biblioteca: () => `
+    <div class="page-heading"><div class="eyebrow">Recursos · Downloads</div><h1>Biblioteca de assets</h1><p>Arquivos disponibilizados para a comunidade usar em criações relacionadas ao Universo Plata.</p></div>
+    <div class="library-intro"><span class="library-intro-icon">↓</span><div><strong>Assets liberados para download</strong><p>Escolha um arquivo para baixar. Os arquivos são servidos diretamente pelo site, sem links externos.</p></div></div>
+    <section class="library-grid">
+      <article class="library-card"><div class="library-preview library-preview-bg"><img src="assets/library/fundo-universoplata-novo.png" alt="Prévia do fundo do Universo Plata"></div><div class="library-card-body"><span class="library-type">IMAGEM · PNG</span><h2>Fundo do Universo Plata</h2><p>Imagem de fundo utilizada como cenário visual do site.</p><a class="library-download" href="assets/library/fundo-universoplata-novo.png" download="fundo-universoplata-novo.png">↓ Baixar PNG</a></div></article>
+      <article class="library-card"><div class="library-preview library-preview-logo"><img src="assets/library/logo-universo-plata.png" alt="Logo do Universo Plata"></div><div class="library-card-body"><span class="library-type">IMAGEM · PNG</span><h2>Logo Universo Plata</h2><p>Logo colorida do projeto enviada pelo criador.</p><a class="library-download" href="assets/library/logo-universo-plata.png" download="logo-universo-plata.png">↓ Baixar PNG</a></div></article>
+      <article class="library-card"><div class="library-preview library-preview-overlay"><img src="assets/library/overlay-universo-plata.png" alt="Prévia da overlay"></div><div class="library-card-body"><span class="library-type">IMAGEM · PNG</span><h2>Overlay do site</h2><p>Camada gráfica transparente utilizada na identidade visual da página.</p><a class="library-download" href="assets/library/overlay-universo-plata.png" download="overlay-universo-plata.png">↓ Baixar PNG</a></div></article>
+      <article class="library-card"><div class="library-preview library-preview-plata"><img src="assets/library/plata.png" alt="Ilustração de Plata"></div><div class="library-card-body"><span class="library-type">IMAGEM · PNG</span><h2>Plata — personagem</h2><p>Ilustração do personagem Plata em corpo inteiro.</p><a class="library-download" href="assets/library/plata.png" download="plata.png">↓ Baixar PNG</a></div></article>
+    </section>
+    <p class="library-note">Respeite os créditos do Universo Plata e não apresente os arquivos como se fossem de sua autoria. Consulte as informações de uso publicadas pelo criador antes de utilizar os assets fora de projetos de fãs.</p>
+  `,
 };
 
 function heading(kicker,title,desc){return `<div class="page-heading"><div class="eyebrow">${kicker}</div><h1>${title}</h1><p>${desc}</p></div>`}
@@ -347,4 +359,162 @@ render();
   $('musicRepeat').classList.toggle('selected', repeat);
   $('musicRepeat').textContent = repeat ? '↻¹' : '↻';
   loadTrack(current, false);
+})();
+
+
+
+/* Comunicados globais + painel administrativo do Universo Plata.
+   O código de acesso é validado somente pelo servidor Render. */
+(() => {
+  const API_BASE = window.PLATA_API_URL || 'https://COLOQUE-A-URL-DO-RENDER.onrender.com';
+  const seenPrefix = 'plata_notice_seen_';
+  let adminToken = null;
+  let typed = '';
+  let typingTimer = null;
+
+  const el = (tag, attrs={}, html='') => {
+    const node = document.createElement(tag);
+    Object.entries(attrs).forEach(([k,v]) => node.setAttribute(k,v));
+    node.innerHTML = html;
+    return node;
+  };
+  const api = async (path, options={}) => {
+    const headers = Object.assign({'Content-Type':'application/json'}, options.headers || {});
+    if (adminToken) headers.Authorization = `Bearer ${adminToken}`;
+    const response = await fetch(API_BASE + path, {...options, headers});
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || `Erro HTTP ${response.status}`);
+    return data;
+  };
+
+  async function loadPublicNotices() {
+    if (API_BASE.includes('COLOQUE-A-URL')) return;
+    try {
+      const {notices=[]} = await api('/api/notices');
+      notices.forEach(notice => {
+        const key = seenPrefix + notice.id;
+        try { if (localStorage.getItem(key)) return; } catch (_) {}
+        showPublicNotice(notice, () => {
+          try { localStorage.setItem(key, '1'); } catch (_) {}
+        });
+      });
+    } catch (error) {
+      console.warn('Não foi possível consultar os comunicados:', error);
+    }
+  }
+
+  function showPublicNotice(notice, markSeen) {
+    if (document.querySelector('.plata-global-notice-backdrop')) return;
+    const backdrop = el('div',{class:'plata-global-notice-backdrop'});
+    const card = el('section',{class:'plata-global-notice',role:'dialog','aria-modal':'true'},
+      `${notice.banner ? `<img class="plata-global-banner" src="${notice.banner}" alt="">` : ''}
+       <div class="plata-global-kicker">✦ COMUNICADO · UNIVERSO PLATA</div>
+       <h2></h2><div class="plata-global-message"></div>
+       <button class="plata-global-ok" type="button">Entendi!</button>`);
+    card.querySelector('h2').textContent = notice.title;
+    card.querySelector('.plata-global-message').textContent = notice.message;
+    backdrop.appendChild(card);
+    document.body.appendChild(backdrop);
+    document.body.classList.add('plata-global-locked');
+    card.querySelector('button').addEventListener('click', () => {
+      markSeen();
+      backdrop.remove();
+      document.body.classList.remove('plata-global-locked');
+    });
+    card.querySelector('button').focus();
+  }
+
+  function adminShell() {
+    let root = document.getElementById('plataAdminPanel');
+    if (root) return root;
+    root = el('div',{id:'plataAdminPanel',class:'plata-admin-backdrop'});
+    root.innerHTML = `<section class="plata-admin">
+      <header><div><small>UNIVERSO PLATA · ADMINISTRAÇÃO</small><h2>Painel de comunicados</h2></div><button type="button" class="plata-admin-close" aria-label="Fechar">×</button></header>
+      <form id="plataNoticeForm">
+        <label>Título<input name="title" maxlength="90" required placeholder="Ex.: Novidade na enciclopédia"></label>
+        <label>Mensagem<textarea name="message" maxlength="1800" required rows="4" placeholder="Escreva o comunicado..."></textarea></label>
+        <label>Banner (opcional)<input name="banner" type="file" accept="image/png,image/jpeg,image/webp"></label>
+        <label>Quando publicar<select name="schedule"><option value="now">Publicar agora</option><option value="later">Agendar data e horário</option></select></label>
+        <label id="plataScheduleWrap" hidden>Data e horário<input name="publishAt" type="datetime-local"></label>
+        <button class="plata-admin-publish" type="submit">Criar comunicado</button>
+        <p class="plata-admin-status" aria-live="polite"></p>
+      </form>
+      <div class="plata-admin-list"><h3>Comunicados existentes</h3><div id="plataNoticeList">Carregando...</div></div>
+    </section>`;
+    document.body.appendChild(root);
+    root.querySelector('.plata-admin-close').onclick = () => root.remove();
+    const form = root.querySelector('form');
+    form.schedule.addEventListener('change', () => {
+      root.querySelector('#plataScheduleWrap').hidden = form.schedule.value !== 'later';
+      form.publishAt.required = form.schedule.value === 'later';
+    });
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const status = root.querySelector('.plata-admin-status');
+      try {
+        status.textContent = 'Enviando...';
+        let banner = '';
+        const file = form.banner.files[0];
+        if (file) {
+          if (file.size > 3*1024*1024) throw new Error('O banner deve ter no máximo 3 MB.');
+          if (!['image/png','image/jpeg','image/webp'].includes(file.type)) throw new Error('Use PNG, JPG ou WEBP.');
+          banner = await new Promise((resolve,reject) => {
+            const reader = new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(file);
+          });
+        }
+        const payload = {title:form.title.value.trim(),message:form.message.value.trim(),banner,
+          publishAt:form.schedule.value==='now' ? new Date().toISOString() : new Date(form.publishAt.value).toISOString()};
+        await api('/api/admin/notices',{method:'POST',body:JSON.stringify(payload)});
+        form.reset(); root.querySelector('#plataScheduleWrap').hidden=true;
+        status.textContent = 'Comunicado salvo! Visitantes verão ao entrar ou recarregar a página.';
+        await refreshAdminList();
+      } catch (err) { status.textContent = err.message; }
+    });
+    refreshAdminList();
+    return root;
+  }
+
+  async function refreshAdminList() {
+    const target = document.getElementById('plataNoticeList');
+    if (!target) return;
+    try {
+      const {notices=[]} = await api('/api/admin/notices');
+      target.innerHTML = '';
+      notices.forEach(n => {
+        const row = el('div',{class:'plata-admin-row'});
+        const info = el('div');
+        const state = new Date(n.publishAt) > new Date() ? 'Agendado' : 'Publicado';
+        info.innerHTML = `<strong></strong><small>${state} · ${new Date(n.publishAt).toLocaleString('pt-BR')}</small>`;
+        info.querySelector('strong').textContent = n.title;
+        const del = el('button',{type:'button'},'Cancelar');
+        del.onclick = async () => { if(confirm('Cancelar este comunicado?')) { await api('/api/admin/notices/'+encodeURIComponent(n.id),{method:'DELETE'}); refreshAdminList(); } };
+        row.append(info,del); target.appendChild(row);
+      });
+      if (!notices.length) target.textContent='Nenhum comunicado criado ainda.';
+    } catch (err) { target.textContent=err.message; }
+  }
+
+  async function openAdmin() {
+    const code = prompt('Código de desenvolvedor:');
+    if (code === null) return;
+    try {
+      const result = await api('/api/admin/login',{method:'POST',body:JSON.stringify({code})});
+      adminToken = result.token;
+      adminShell();
+    } catch (err) { alert('Acesso negado: '+err.message); }
+  }
+
+  // Digite 2411 em qualquer lugar da página para abrir o acesso administrativo.
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+    if (e.key.length !== 1 || !/[0-9]/.test(e.key)) return;
+    typed += e.key;
+    typed = typed.slice(-4);
+    if (typed === '2411') { typed=''; openAdmin(); }
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => typed='', 1600);
+  });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',loadPublicNotices,{once:true});
+  else loadPublicNotices();
 })();

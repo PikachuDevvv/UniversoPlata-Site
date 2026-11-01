@@ -113,3 +113,103 @@ h1{font-size:clamp(34px,5vw,58px);line-height:1.02;margin:12px 0;color:#3a2928;l
 .music-player.minimized{display:none}
 @media(max-width:900px){.music-player{left:235px;width:calc(100vw - 255px)}.music-expand{left:235px}}
 @media(max-width:650px){.music-player{left:10px;right:10px;bottom:10px;width:auto;padding:10px 11px}.music-expand{left:10px;bottom:10px}.music-controls{gap:5px}.music-volume input{width:48px}.music-playlist{grid-template-columns:1fr}.content{padding-bottom:150px}}
+
+/* Ajuste compacto das prévias da Biblioteca */
+.library-preview{
+  height:112px!important;
+  padding:10px!important;
+  box-sizing:border-box!important;
+}
+.library-preview img{
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:92px!important;
+  object-fit:contain!important;
+}
+.library-preview-bg img{
+  width:100%!important;
+  height:100%!important;
+  max-height:92px!important;
+  object-fit:contain!important;
+}
+.library-card-body{padding:13px 15px 15px!important}
+.library-card h2{font-size:16px!important}
+@media(max-width:650px){
+  .library-preview{height:105px!important}
+  .library-preview img{max-height:85px!important}
+}
+
+
+/* Aviso compacto de novidades por atualização */
+.plata-update-notice{
+  position:fixed;right:22px;bottom:22px;width:min(340px,calc(100vw - 32px));
+  z-index:10020;padding:17px 18px 16px;border:1px solid rgba(255,255,255,.8);
+  border-radius:16px;background:rgba(255,249,243,.98);color:#3b2927;
+  box-shadow:0 14px 42px rgba(47,15,13,.28);font-family:inherit;
+  animation:plataNoticeIn .28s ease-out;
+}
+.plata-update-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.plata-update-label{font-size:9px;letter-spacing:1.5px;font-weight:900;color:#bd5148}
+.plata-update-close{border:0;background:transparent;color:#725b55;font-size:23px;line-height:1;cursor:pointer;padding:0 2px}
+.plata-update-notice strong{display:block;font-size:16px;line-height:1.25;margin-bottom:6px}
+.plata-update-notice p{font-size:12px;line-height:1.55;color:#735e58;margin:0 0 13px}
+.plata-update-ok{border:0;border-radius:9px;background:#d45d52;color:white;padding:9px 14px;font-size:11px;font-weight:800;cursor:pointer}
+.plata-update-ok:hover{background:#ad463f}
+.plata-update-hide{opacity:0;transform:translateY(8px);transition:opacity .2s ease,transform .2s ease}
+@keyframes plataNoticeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:480px){.plata-update-notice{right:12px;bottom:12px;width:calc(100vw - 24px)}}
+
+
+/* Modal central de novidades: fundo bloqueado e desfocado até "Entendi!". */
+body.plata-update-locked{overflow:hidden!important}
+.plata-update-backdrop{
+  position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;
+  padding:20px;box-sizing:border-box;background:rgba(20,10,10,.48);
+  -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
+  animation:plataBackdropIn .22s ease-out;
+}
+.plata-update-notice{
+  position:relative;right:auto;bottom:auto;width:min(430px,100%);
+  box-sizing:border-box;padding:30px 28px 26px;text-align:center;
+  border:1px solid rgba(255,255,255,.85);border-radius:22px;
+  background:rgba(255,249,243,.99);color:#3b2927;
+  box-shadow:0 22px 70px rgba(20,8,8,.38);font-family:inherit;
+  animation:plataModalIn .28s cubic-bezier(.2,.8,.2,1);
+}
+.plata-update-label{display:block;margin-bottom:18px;font-size:10px;letter-spacing:1.8px;font-weight:900;color:#bd5148}
+.plata-update-symbol{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 15px;border-radius:17px;background:#f8ded4;color:#b94d45;font-size:27px}
+.plata-update-notice h2{margin:0 0 10px;font-size:23px;line-height:1.2;color:#3b2927}
+.plata-update-notice p{margin:0 auto 22px;max-width:340px;font-size:13px;line-height:1.65;color:#735e58}
+.plata-update-ok{min-width:132px;border:0;border-radius:11px;background:#d45d52;color:white;padding:12px 22px;font-size:13px;font-weight:900;cursor:pointer;transition:background .15s,transform .15s}
+.plata-update-ok:hover{background:#ad463f;transform:translateY(-1px)}
+.plata-update-ok:focus-visible{outline:3px solid #3b2927;outline-offset:3px}
+.plata-update-backdrop-hide{opacity:0;transition:opacity .2s ease}
+.plata-update-backdrop-hide .plata-update-notice{transform:translateY(8px) scale(.98);transition:transform .2s ease}
+@keyframes plataBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes plataModalIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.plata-update-notice{padding:26px 20px 22px}.plata-update-notice h2{font-size:20px}}
+
+/* Comunicados globais e painel admin */
+.plata-global-locked{overflow:hidden!important}
+.plata-global-notice-backdrop,.plata-admin-backdrop{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:18px;box-sizing:border-box;background:rgba(18,8,8,.58);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.plata-global-notice,.plata-admin{width:min(500px,100%);max-height:90vh;overflow:auto;box-sizing:border-box;padding:26px;border-radius:22px;background:#fff9f3;color:#382725;box-shadow:0 24px 80px #16080870}
+.plata-global-banner{display:block;width:100%;max-height:190px;object-fit:cover;border-radius:13px;margin-bottom:17px}
+.plata-global-kicker,.plata-admin small{font-size:10px;letter-spacing:1.5px;font-weight:900;color:#b94d45}
+.plata-global-notice h2{font-size:24px;line-height:1.2;margin:10px 0}
+.plata-global-message{font-size:14px;line-height:1.65;white-space:pre-wrap;color:#705a54;margin-bottom:22px}
+.plata-global-ok,.plata-admin-publish{border:0;border-radius:10px;background:#d45d52;color:white;padding:12px 20px;font-weight:900;cursor:pointer}
+.plata-admin{width:min(650px,100%);padding:22px}
+.plata-admin header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.plata-admin header h2{margin:5px 0;font-size:22px}
+.plata-admin-close{border:0;background:transparent;font-size:28px;cursor:pointer;color:#705a54}
+.plata-admin form{display:grid;gap:12px}
+.plata-admin label{display:grid;gap:6px;font-size:12px;font-weight:800;color:#624c46}
+.plata-admin input,.plata-admin textarea,.plata-admin select{width:100%;box-sizing:border-box;border:1px solid #dfc9c1;border-radius:9px;padding:10px;background:#fff;color:#382725;font:inherit}
+.plata-admin-status{font-size:12px;color:#795d55;margin:0}
+.plata-admin-list{margin-top:22px;border-top:1px solid #eadbd5;padding-top:14px}
+.plata-admin-list h3{font-size:15px;margin:0 0 10px}
+.plata-admin-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #eadbd5}
+.plata-admin-row small{display:block;margin-top:4px;letter-spacing:0;font-weight:500}
+.plata-admin-row button{border:1px solid #d9aaa2;background:#fff1ed;color:#9c3e36;border-radius:8px;padding:7px 10px;cursor:pointer}
+@media(max-width:520px){.plata-global-notice,.plata-admin{padding:20px}.plata-global-notice h2{font-size:21px}}

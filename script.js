@@ -156,6 +156,7 @@ misterios: () => `
 atualizacoes: () => `
   ${heading('Registro de versões','Atualizações da enciclopédia','O que foi acrescentado nesta edição do site.')}
   <div class="timeline">
+    ${event('Versão 2.2 · 01/11/2026','Trilha sonora de Natal','Player atualizado para tocar exclusivamente É Natal Mano!, com controles simplificados e opção de repetição.') }
     ${event('Versão 2.0 · 01/11/2026','Grande expansão da enciclopédia','Adicionadas páginas sobre Hectayumu, PDAC, anomalias, murânio, hectayumose, tecnologia, arquivos .pdacEntity, acontecimentos, cronologia e mistérios.')}
     ${event('Versão 1.0 · Edição inicial','Fundação da enciclopédia','Criada a estrutura do site, navegação, identidade visual e perfil inicial de Plata.')}
   </div>
@@ -206,57 +207,42 @@ function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','
 render();
 
 
-/* PLAYER MUSICAL — UNIVERSO PLATA
+/* PLAYER MUSICAL — EDIÇÃO DE NATAL
    Player persistente entre páginas/hash routes; inicia somente após interação do usuário. */
 (() => {
   const tracks = [
-    { title: 'Down with the King', file: '01-down-with-the-king.mp3' },
-    { title: 'Everything Everything', file: '02-everything-everything.mp3' },
-    { title: 'Slingshot', file: '03-slingshot.mp3' },
-    { title: 'Pox', file: '04-pox.mp3' },
-    { title: 'Aloe Lite', file: '05-aloe-lite.mp3' },
-    { title: 'Drifting', file: '06-drifting.mp3' }
+    { title: 'É Natal Mano!', file: 'natal-mano.mp3' }
   ];
-  const storageKey = 'universoPlataMusicPlayerV1';
+  const storageKey = 'universoPlataMusicPlayerNatalV1';
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch (_) {}
-  let current = Number.isInteger(saved.track) && saved.track >= 0 && saved.track < tracks.length ? saved.track : 0;
-  let shuffle = !!saved.shuffle;
   let repeat = !!saved.repeat;
-  let playlistOpen = false;
   let isSeeking = false;
 
   const player = document.createElement('section');
   player.className = 'music-player';
-  player.setAttribute('aria-label', 'Player de músicas do Universo Plata');
+  player.setAttribute('aria-label', 'Player de música de Natal do Universo Plata');
   player.innerHTML = `
     <audio id="plataAudio" preload="metadata"></audio>
     <div class="music-main">
       <button class="music-play" id="musicPlay" type="button" aria-label="Reproduzir">▶</button>
-      <div class="music-track-info"><span class="music-kicker">TRILHA SONORA</span><strong id="musicTitle">Down with the King</strong><span id="musicStatus">Pronto para tocar</span></div>
-      <button class="music-icon-btn" id="musicPlaylistToggle" type="button" aria-label="Mostrar playlist" title="Playlist">☷</button>
+      <div class="music-track-info"><span class="music-kicker">TRILHA SONORA DE NATAL</span><strong id="musicTitle">É Natal Mano!</strong><span id="musicStatus">Pronto para tocar</span></div>
       <button class="music-icon-btn" id="musicMinimize" type="button" aria-label="Minimizar player" title="Minimizar">−</button>
     </div>
     <div class="music-controls">
-      <button class="music-icon-btn" id="musicPrev" type="button" aria-label="Música anterior" title="Anterior">|◀</button>
-      <button class="music-icon-btn" id="musicNext" type="button" aria-label="Próxima música" title="Próxima">▶|</button>
-      <button class="music-icon-btn" id="musicShuffle" type="button" aria-label="Aleatório" title="Aleatório">🔀</button>
       <button class="music-icon-btn" id="musicRepeat" type="button" aria-label="Repetir faixa" title="Repetir faixa">↻</button>
       <span class="music-time" id="musicCurrentTime">0:00</span>
       <input class="music-progress" id="musicProgress" type="range" min="0" max="1000" value="0" aria-label="Progresso da música">
       <span class="music-time" id="musicDuration">0:00</span>
       <label class="music-volume" title="Volume">♪ <input id="musicVolume" type="range" min="0" max="1" step="0.01" aria-label="Volume"></label>
     </div>
-    <div class="music-playlist" id="musicPlaylist" hidden></div>
     <button class="music-expand" id="musicExpand" type="button" hidden>♫ Música</button>`;
   document.body.appendChild(player);
 
   const $ = id => player.querySelector('#' + id);
   const audio = $('plataAudio');
   const playBtn = $('musicPlay');
-  const title = $('musicTitle');
   const status = $('musicStatus');
-  const playlist = $('musicPlaylist');
   const progress = $('musicProgress');
   const volume = $('musicVolume');
   const fmt = seconds => {
@@ -265,29 +251,15 @@ render();
     return `${m}:${String(s).padStart(2, '0')}`;
   };
   const persist = () => {
-    try { localStorage.setItem(storageKey, JSON.stringify({track: current, shuffle, repeat, volume: audio.volume})); } catch (_) {}
+    try { localStorage.setItem(storageKey, JSON.stringify({repeat, volume: audio.volume})); } catch (_) {}
   };
-  function renderPlaylist() {
-    playlist.innerHTML = tracks.map((track, i) => `<button type="button" class="music-track${i === current ? ' active' : ''}" data-track="${i}"><span>${String(i+1).padStart(2,'0')}</span><b>${track.title}</b>${i === current ? '<em>TOCANDO</em>' : ''}</button>`).join('');
-  }
-  function loadTrack(index, autoplay=false) {
-    current = (index + tracks.length) % tracks.length;
-    audio.src = `assets/music/${tracks[current].file}`;
-    title.textContent = tracks[current].title;
-    progress.value = 0;
-    $('musicCurrentTime').textContent = '0:00';
-    $('musicDuration').textContent = '0:00';
-    renderPlaylist();
-    persist();
-    if (autoplay) play();
-  }
   async function play() {
     try {
       await audio.play();
       playBtn.textContent = 'Ⅱ';
       playBtn.setAttribute('aria-label', 'Pausar');
       status.textContent = 'Reproduzindo';
-    } catch (err) {
+    } catch (_) {
       status.textContent = 'Clique em ▶ para iniciar';
       playBtn.textContent = '▶';
     }
@@ -298,36 +270,13 @@ render();
     playBtn.setAttribute('aria-label', 'Reproduzir');
     status.textContent = 'Pausado';
   }
-  function next() {
-    if (shuffle && tracks.length > 1) {
-      let n = current;
-      while (n === current) n = Math.floor(Math.random() * tracks.length);
-      loadTrack(n, true);
-    } else loadTrack(current + 1, true);
-  }
   playBtn.addEventListener('click', () => audio.paused ? play() : pause());
-  $('musicPrev').addEventListener('click', () => loadTrack(current - 1, true));
-  $('musicNext').addEventListener('click', next);
-  $('musicShuffle').addEventListener('click', () => {
-    shuffle = !shuffle;
-    $('musicShuffle').classList.toggle('selected', shuffle);
-    status.textContent = shuffle ? 'Ordem aleatória ativada' : (audio.paused ? 'Pronto para tocar' : 'Reproduzindo');
-    persist();
-  });
   $('musicRepeat').addEventListener('click', () => {
     repeat = !repeat;
     $('musicRepeat').classList.toggle('selected', repeat);
     $('musicRepeat').textContent = repeat ? '↻¹' : '↻';
     $('musicRepeat').title = repeat ? 'Repetir faixa: ativado' : 'Repetir faixa';
     persist();
-  });
-  $('musicPlaylistToggle').addEventListener('click', () => {
-    playlistOpen = !playlistOpen;
-    playlist.hidden = !playlistOpen;
-  });
-  playlist.addEventListener('click', e => {
-    const btn = e.target.closest('[data-track]');
-    if (btn) loadTrack(Number(btn.dataset.track), true);
   });
   $('musicMinimize').addEventListener('click', () => {
     player.classList.add('minimized');
@@ -352,13 +301,15 @@ render();
   volume.addEventListener('input', () => { audio.volume = Number(volume.value); persist(); });
   audio.addEventListener('play', () => { playBtn.textContent = 'Ⅱ'; status.textContent = 'Reproduzindo'; });
   audio.addEventListener('pause', () => { playBtn.textContent = '▶'; if (!audio.ended) status.textContent = 'Pausado'; });
-  audio.addEventListener('ended', () => repeat ? (audio.currentTime = 0, play()) : next());
+  audio.addEventListener('ended', () => {
+    if (repeat) { audio.currentTime = 0; play(); }
+    else { playBtn.textContent = '▶'; playBtn.setAttribute('aria-label', 'Reproduzir'); status.textContent = 'Música concluída'; }
+  });
   audio.addEventListener('error', () => { status.textContent = 'Não foi possível carregar esta faixa'; });
 
-  $('musicShuffle').classList.toggle('selected', shuffle);
   $('musicRepeat').classList.toggle('selected', repeat);
   $('musicRepeat').textContent = repeat ? '↻¹' : '↻';
-  loadTrack(current, false);
+  audio.src = 'assets/music/natal-mano.mp3';
 })();
 
 

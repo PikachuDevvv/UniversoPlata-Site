@@ -1,0 +1,17 @@
+PATCH DE CORREÇÃO — OVERLAY E PLAYER MUSICAL
+
+Problema corrigido:
+A overlay estava com z-index 9999 e o player com z-index 9998, fazendo a overlay aparecer por cima dos controles.
+
+Correção:
+- Overlay permanece em z-index 9999.
+- Player e botão de player minimizado passam para z-index 10000.
+- O restante do CSS original do patch musical foi preservado.
+
+INSTALAÇÃO:
+1. Faça backup do style.css atual.
+2. Extraia este ZIP.
+3. Substitua somente o arquivo style.css na pasta principal do site.
+4. Pressione Ctrl + F5 no navegador.
+
+Não precisa substituir script.js nem a pasta assets/music.

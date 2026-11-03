@@ -1,9 +1,10 @@
-CORREÇÃO DO PLAYER DE NATAL
+PATCH — FUNDO NATALINO FIXO
 
-1. Extraia este ZIP.
-2. Copie o arquivo script.js para a pasta principal do site, substituindo o antigo.
-3. Copie a pasta assets/music/natal-mano.mp3 para a pasta assets/music do site.
-4. Não coloque os arquivos dentro de uma subpasta chamada enciclopedia-universo-plata.
-5. Recarregue o site com Ctrl+F5.
+Arquivos incluídos: index.html e style.css.
 
-O caminho final da música deve ser: assets/music/natal-mano.mp3
+Como aplicar:
+1. Extraia os dois arquivos na pasta principal do projeto.
+2. Substitua os arquivos existentes quando solicitado.
+3. Faça commit e push normalmente.
+
+O fundo ocupa somente a área visível da tela (viewport), usa cover para preservar a proporção da imagem e permanece fixo enquanto a página rola. A camada fica atrás do conteúdo, da overlay e da neve.

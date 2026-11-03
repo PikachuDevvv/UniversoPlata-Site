@@ -1,0 +1,10 @@
+PATCH — FUNDO NATALINO FIXO
+
+Arquivos incluídos: index.html e style.css.
+
+Como aplicar:
+1. Extraia os dois arquivos na pasta principal do projeto.
+2. Substitua os arquivos existentes quando solicitado.
+3. Faça commit e push normalmente.
+
+O fundo ocupa somente a área visível da tela (viewport), usa cover para preservar a proporção da imagem e permanece fixo enquanto a página rola. A camada fica atrás do conteúdo, da overlay e da neve.

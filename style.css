@@ -2,9 +2,11 @@
 :root{--ink:#292323;--muted:#776563;--red:#d45d52;--red-dark:#a9413c;--cream:#fff7ed;--line:rgba(80,42,38,.13);--card:rgba(255,250,244,.94)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:#c85b52 url("assets/FundoNatal.png") center center/cover fixed no-repeat}
-body:before{content:"";position:fixed;inset:0;background:rgba(112,35,35,.12);z-index:-1}
-.site{min-height:100vh}
+body{margin:0;min-height:100vh;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:#c85b52}
+
+.natal-background{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:#c85b52 url("assets/FundoNatal.png") center center/cover no-repeat;z-index:0;pointer-events:none}
+.natal-background:after{content:"";position:absolute;inset:0;background:rgba(112,35,35,.12)}
+.site{position:relative;z-index:1;min-height:100vh}
 .topbar{height:112px;position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:8px 34px 8px 300px;background:linear-gradient(180deg,rgba(43,20,20,.82),rgba(43,20,20,.48));backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.14)}
 .brand{position:absolute;left:50%;top:5px;transform:translateX(-50%);height:102px;display:flex;align-items:center}
 .brand img{height:100%;width:auto;max-width:min(340px,48vw);object-fit:contain;filter:drop-shadow(0 3px 8px #411b1b66)}
@@ -70,7 +72,6 @@ h1{font-size:clamp(34px,5vw,58px);line-height:1.02;margin:12px 0;color:#3a2928;l
 #plataSnow{position:fixed;inset:0;width:100%;height:100%;z-index:10002;pointer-events:none;display:block}
 @media(max-width:900px){.topbar{padding-left:20px}.brand{left:50%}.sidebar{width:220px}.content{margin-left:220px;padding-left:25px;padding-right:25px}.footer{margin-left:220px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.topbar{height:92px;padding:7px 14px}.brand{height:82px}.menu-toggle{display:block;z-index:2}.top-actions{width:42%;}.searchbox{width:100%;padding:8px}.searchbox input{font-size:11px}.sidebar{top:92px;transform:translateX(-105%);transition:.22s;width:250px;box-shadow:12px 0 25px #35181744}.sidebar.open{transform:translateX(0)}.content{margin-left:0;padding:112px 14px 30px}.footer{margin-left:0}.hero{grid-template-columns:1fr;padding:27px 24px}.hero-art{height:185px;grid-row:1}.hero-copy{grid-row:2}.hero h1{font-size:40px}.cards{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.detail-layout{grid-template-columns:1fr}.page-heading h1{font-size:31px}.screen-overlay{background-size:100% 100%;background-position:center}
-body{background-attachment:scroll;background-position:center center;background-size:100% 100%}
 #plataSnow{position:fixed;width:100vw;height:100dvh}}
 
 /* PATCH 2.0 — novos componentes de lore */
